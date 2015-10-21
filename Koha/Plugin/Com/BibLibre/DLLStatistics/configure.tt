@@ -1,0 +1,37 @@
+[% INCLUDE 'doc-head-open.inc' %]
+ <title>Koha: DLL Statistics plugin: Configuration</title>
+[% INCLUDE 'doc-head-close.inc' %]
+</head>
+<body>
+[% INCLUDE 'header.inc' %]
+[% INCLUDE 'cat-search.inc' %]
+
+<div id="breadcrumbs">
+  <a href="/cgi-bin/koha/mainpage.pl">Home</a>
+  &rsaquo;
+  <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a>
+  &rsaquo;
+  DLL Statistics
+  &rsaquo;
+  Configuration
+</div>
+
+<div id="doc3">
+    <!-- We can access our own plugins resource files using the PLUGIN_PATH variable. -->
+    <h3>Koha: DLL Statistics Plugin: Configuration</h3>
+
+    <!-- Notice our form here has no 'action', this is good, it means that our forms will always get passed back to 'plugins/run.pl'. You could hard code it instead if you prefer -->
+    <form>
+        <!-- Always pass these two parameters so the plugin system knows what to execute! -->
+        <input type="hidden" name="class" value="[% CLASS %]"/>
+        <input type="hidden" name="method" value="[% METHOD %]"/>
+
+        <div>
+            <textarea name="conf" rows="30" cols="80">[% conf %]</textarea>
+        </div>
+
+        <input type="hidden" name="save" value="1" />
+        <input type="submit" value="Save configuration" />
+    </form>
+
+[% INCLUDE 'intranet-bottom.inc' %]
