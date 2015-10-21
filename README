@@ -1,1 +1,5 @@
 Koha plugin for DLL statistics
+
+To create KPZ archive from git repository, run the following command:
+
+  git archive --output=../koha-plugin-DLLStatistics.kpz --format=zip HEAD -- Koha
