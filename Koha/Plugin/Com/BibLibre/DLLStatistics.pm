@@ -410,8 +410,8 @@ sub process_block {
     my $output = '';
 
     if ( $verbose ) {
-        my $indent = "=" x ( 5 - $block->{level} );
-        $output .= $indent . $block->{title} . $indent . "\n";
+        my $indent = "=" x ($block->{level} + 1);
+        $output .= $indent . ' ' . $block->{title} . ' ' . $indent . "\n";
     }
     if ( $block->{blocks} ) {
         for my $b ( @{ $block->{blocks} } ) {
@@ -420,8 +420,12 @@ sub process_block {
     }
     elsif ( $block->{queries} ) {
         for my $query ( @{ $block->{queries} } ) {
-            my $indent = "=" x ( 5 - $query->{level} );
-            $output .= $indent . $query->{title} . $indent . "\n";
+            my $indent = "=" x ($query->{level} + 1);
+            $output .= $indent . ' ' . $query->{title};
+            if ($query->{label}) {
+                $output .= ' - ' . $query->{label};
+            }
+            $output .= ' ' . $indent . "\n";
             if ( $execute ) {
                 my ( $data, $result ) ;
                 eval {
@@ -627,27 +631,35 @@ sub get_blocks {
                                     title                 => 'Livres imprimés',
                                     additional_conditions => [@livres_imprimes],
                                     queries               => [
-                                        { title => 'D101', },
                                         {
-                                            title                 => 'D102',
+                                            title => 'D101',
+                                            label => "Nombre d'exemplaires 'Livres imprimés' adulte - Fonds",
+                                        },
+                                        {
+                                            title => 'D102',
+                                            label => "Nombre d'exemplaires 'Livres imprimés' adulte - Acquistions",
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
                                             ],
                                         },
                                         {
                                             title => 'D103',
+                                            label => "Nombre d'exemplaires 'Livres imprimés' adulte - Eliminations",
                                             based_query => $total_deleteditems_join_biblioitems_query,
                                         },
                                         {
                                             title => 'D104',
+                                            label => "Nombre d'exemplaires 'Livres imprimés' adulte - Fonds en libre acces",
                                             additional_conditions => [@libre_access],
                                         },
                                         {
                                             title => 'D105',
+                                            label => "Nombre de titres 'Livres imprimés' adulte - Fonds",
                                             based_query => $total_biblio_join_items_query,
                                         },
                                         {
                                             title => 'D106',
+                                            label => "Nombre de titres 'Livres imprimés' adulte - Fonds Acquisitions",
                                             based_query => $total_biblio_join_items_query,
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
@@ -655,10 +667,12 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'D107',
+                                            label => "Nombre d'exemplaires 'Livres imprimés' adulte publiés avant 1811 - Fonds",
                                             additional_conditions => [@date_before_1811],
                                         },
                                         {
                                             title                 => 'D108',
+                                            label => "Nombre d'exemplaires 'Livres imprimés' adulte publiés avant 1811 - Acquisitions",
                                             additional_conditions => [
                                                 @date_before_1811,
                                                 qq|dateaccessioned=$date_of_this_year%|
@@ -666,10 +680,12 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'D109',
+                                            label => "Nombre d'exemplaires 'Livres imprimés' adulte publiés entre 1811 et 1914 - Fonds",
                                             additional_conditions => [@date_between_1811_1914],
                                         },
                                         {
                                             title                 => 'D110',
+                                            label => "Nombre d'exemplaires 'Livres imprimés' adulte publiés entre 1811 et 1914 - Acquistions",
                                             additional_conditions => [
                                                 @date_between_1811_1914,
                                                 qq|dateaccessioned=$date_of_this_year%|
@@ -681,27 +697,35 @@ sub get_blocks {
                                     title => "Publications en série imprimées",
                                     additional_conditions => [@publications_en_serie_imprimees],
                                     queries => [
-                                        { title => 'D111', },
                                         {
-                                            title                 => 'D112',
+                                            title => 'D111',
+                                            label => "Nombre d'exemplaires 'Publications en série' adulte - Fonds",
+                                        },
+                                        {
+                                            title => 'D112',
+                                            label => "Nombre d'exemplaires 'Publications en série' adulte - Acquistions",
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
                                             ],
                                         },
                                         {
                                             title => 'D113',
+                                            label => "Nombre d'exemplaires 'Publications en série' adulte - Eliminations",
                                             based_query => $total_deleteditems_join_biblioitems_query,
                                         },
                                         {
                                             title => 'D114',
+                                            label => "Nombre d'exemplaires 'Publications en série' adulte - Fonds en libre acces",
                                             additional_conditions => [@libre_access],
                                         },
                                         {
                                             title => 'D115',
+                                            label => "Nombre de titres 'Publications en série' adulte - Fonds",
                                             based_query => $total_biblio_join_items_query,
                                         },
                                         {
                                             title => 'D141',
+                                            label => "Nombre de titres 'Publications en série' adulte - Fonds Acquisitions",
                                             based_query => $total_biblio_join_items_query,
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
@@ -719,27 +743,35 @@ sub get_blocks {
                                     title                 => 'Livres imprimés',
                                     additional_conditions => [@livres_imprimes],
                                     queries               => [
-                                        { title => 'D116', },
+                                        {
+                                            title => 'D116',
+                                            label => "Nombre d'exemplaires 'Livres imprimés' enfant - Fonds",
+                                        },
                                         {
                                             title                 => 'D117',
+                                            label => "Nombre d'exemplaires 'Livres imprimés' enfant - Acquistions",
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
                                             ],
                                         },
                                         {
                                             title => 'D118',
+                                            label => "Nombre d'exemplaires 'Livres imprimés' enfant - Eliminations",
                                             based_query => $total_deleteditems_join_biblioitems_query,
                                         },
                                         {
                                             title => 'D119',
+                                            label => "Nombre d'exemplaires 'Livres imprimés' enfant - Fonds en libre acces",
                                             additional_conditions => [@libre_access],
                                         },
                                         {
                                             title => 'D120',
+                                            label => "Nombre de titres 'Livres imprimés' enfant - Fonds",
                                             based_query => $total_biblio_join_items_query,
                                         },
                                         {
                                             title => 'D121',
+                                            label => "Nombre de titres 'Livres imprimés' enfant - Fonds Acquisitions",
                                             based_query => $total_biblio_join_items_query,
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
@@ -751,27 +783,35 @@ sub get_blocks {
                                     title => "Publications en série imprimées",
                                     additional_conditions => [@publications_en_serie_imprimees],
                                     queries => [
-                                        { title => 'D122', },
+                                        {
+                                            title => 'D122',
+                                            label => "Nombre d'exemplaires 'Publications en série' enfant - Fonds",
+                                        },
                                         {
                                             title => 'D123',
+                                            label => "Nombre d'exemplaires 'Publications en série' enfant - Acquistions",
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
                                             ],
                                         },
                                         {
                                             title => 'D124',
+                                            label => "Nombre d'exemplaires 'Publications en série' enfant - Eliminations",
                                             based_query => $total_deleteditems_join_biblioitems_query,
                                         },
                                         {
                                             title => 'D125',
+                                            label => "Nombre d'exemplaires 'Publications en série' enfant - Fonds en libre acces",
                                             additional_conditions => [@libre_access],
                                         },
                                         {
                                             title => 'D126',
+                                            label => "Nombre de titres 'Publications en série' enfant - Fonds",
                                             based_query => $total_biblio_join_items_query,
                                         },
                                         {
                                             title => 'D127',
+                                            label => "Nombre de titres 'Publications en série' enfant - Fonds Acquisitions",
                                             based_query => $total_biblio_join_items_query,
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
@@ -788,32 +828,41 @@ sub get_blocks {
                                     title                 => 'Livres imprimés',
                                     additional_conditions => [@livres_imprimes],
                                     queries               => [
-                                        { title => 'D128', },
+                                        {
+                                            title => 'D128',
+                                            label => "Total Exemplaires 'Livres imprimés'",
+                                        },
                                         {
                                             title                 => 'D129',
+                                            label => "Total Exemplaires 'Livres imprimés' Acquistions",
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
                                             ],
                                         },
                                         {
                                             title => 'D130',
+                                            label => "Total Exemplaires 'Livres imprimés' Eliminations",
                                             based_query => $total_deleteditems_join_biblioitems_query,
                                         },
                                         {
                                             # TODO missing spec
                                             title => 'D131',
+                                            label => "Total Exemplaires 'Livres imprimés' Dons",
                                             additional_conditions => [qq|dateaccessioned=$date_of_this_year%|],
                                         },
                                         {
                                             title => 'D132',
+                                            label => "Total Exemplaires 'Livres imprimés' Fonds libre accès",
                                             additional_conditions => [@libre_access],
                                         },
                                         {
                                             title => 'D133',
+                                            label => "Total Titres 'Livres imprimés' Fonds",
                                             based_query => $total_biblio_join_items_query,
                                         },
                                         {
                                             title => 'D134',
+                                            label => "Total Titres 'Livres imprimés' Acquisitions",
                                             based_query => $total_biblio_join_items_query,
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
@@ -825,27 +874,35 @@ sub get_blocks {
                                     title => "Publications en série imprimées",
                                     additional_conditions => [@publications_en_serie_imprimees],
                                     queries => [
-                                        { title => 'D135', },
+                                        {
+                                            title => 'D135',
+                                            label => "Total Exemplaires 'Publications en série' Fonds",
+                                        },
                                         {
                                             title                 => 'D136',
+                                            label => "Total Exemplaires 'Publications en série' Acquisitions",
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
                                             ],
                                         },
                                         {
                                             title => 'D137',
+                                            label => "Total Exemplaires 'Publications en série' Eliminations",
                                             based_query => $total_deleteditems_join_biblioitems_query,
                                         },
                                         {
                                             title => 'D138',
+                                            label => "Total Exemplaires 'Publications en série' en libre Accès",
                                             additional_conditions => [@libre_access],
                                         },
                                         {
                                             title => 'D139',
+                                            label => "Total Titres 'Publications en série' Fonds",
                                             based_query => $total_biblio_join_items_query,
                                         },
                                         {
                                             title => 'D140',
+                                            label => "Total Titres 'Publications en série' Acquisitions",
                                             based_query => $total_biblio_join_items_query,
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
@@ -868,6 +925,7 @@ sub get_blocks {
                             queries                => [
                                 {
                                     title => 'D201',
+                                    label => "Nombre d'abonnements Adultes",
                                     based_query => $total_subscriptionid_from_subscription_join_items_join_biblioitems_query,
                                     additional_conditions => [
                                         qq|enddate>=$date_of_this_year-01-01|,
@@ -875,6 +933,7 @@ sub get_blocks {
                                 },
                                 {
                                     title => 'D202',
+                                    label => "Nombre de titres 'Publications en série' Adultes",
                                     based_query => $total_biblionumber_from_subscription_join_items_join_biblioitems_query,
                                     additional_conditions => [
                                         qq|enddate>=$date_of_this_year-01-01|,
@@ -893,6 +952,7 @@ sub get_blocks {
                             queries => [
                                 {
                                     title => 'D203',
+                                    label => "Nombre d'abonnements Enfants",
                                     based_query => $total_subscriptionid_from_subscription_join_items_join_biblioitems_query,
                                     additional_conditions => [
                                         qq|enddate>=$date_of_this_year-01-01|,
@@ -900,6 +960,7 @@ sub get_blocks {
                                 },
                                 {
                                     title => 'D204',
+                                    label => "Nombre de titres 'Publications en série' Enfants",
                                     based_query => $total_biblionumber_from_subscription_join_items_join_biblioitems_query,
                                     additional_conditions => [
                                         qq|enddate>=$date_of_this_year-01-01|,
@@ -928,9 +989,11 @@ sub get_blocks {
                             queries => [
                                 {
                                     title => 'D305',
+                                    label => "Nombre d'exemplaires 'Microformes' Fonds",
                                 },
                                 {
                                     title => 'D306',
+                                    label => "Nombre d'exemplaires 'Microformes' Acquisitions",
                                     additional_conditions => [
                                         qq|dateaccessioned=$date_of_this_year%|,
                                     ]
@@ -944,9 +1007,11 @@ sub get_blocks {
                             queries => [
                                 {
                                     title => 'D307',
+                                    label => "Nombre d'exemplaires 'Documents cartographiques' Fonds",
                                 },
                                 {
                                     title => 'D308',
+                                    label => "Nombre d'exemplaires 'Documents cartographiques' Acquisitions",
                                     additional_conditions => [
                                         qq|dateaccessioned=$date_of_this_year%|,
                                     ]
@@ -960,23 +1025,28 @@ sub get_blocks {
                             queries => [
                                 {
                                     title => 'D309',
+                                    label => "Nombre d'exemplaires 'Musique imprimée' Fonds",
                                 },
                                 {
                                     title => 'D310',
+                                    label => "Nombre d'exemplaires 'Musique imprimée' Acquisitions",
                                     additional_conditions => [
                                         qq|dateaccessioned=$date_of_this_year%|,
                                     ]
                                 },
                                 {
                                     title => 'D311',
+                                    label => "Nombre d'exemplaires 'Musique imprimée' en libre accès",
                                     additional_conditions => [@libre_access]
                                 },
                                 {
                                     title => 'D312',
+                                    label => "Nombre de titres 'Musique imprimée'",
                                     based_query => $total_biblio_join_items_query,
                                 },
                                 {
                                     title => 'D313',
+                                    label => "Nombre de titres 'Musique imprimée' Acquisitions",
                                     based_query => $total_biblio_join_items_query,
                                     additional_conditions => [
                                         qq|dateaccessioned=$date_of_this_year%|
@@ -991,9 +1061,11 @@ sub get_blocks {
                             queries => [
                                 {
                                     title => 'D314',
+                                    label => "Nombre d'exemplaires 'Documents graphiques' Fonds",
                                 },
                                 {
                                     title => 'D315',
+                                    label => "Nombre d'exemplaires 'Documents graphiques' Acquisitions",
                                     additional_conditions => [
                                         qq|dateaccessioned=$date_of_this_year%|
                                     ]
@@ -1007,15 +1079,18 @@ sub get_blocks {
                             queries => [
                                 {
                                     title => 'D318',
+                                    label => "Nombre d'exemplaires 'Autres Documents' Fonds",
                                 },
                                 {
                                     title => 'D319',
+                                    label => "Nombre d'exemplaires 'Autres Documents' Acquisitions",
                                     additional_conditions => [
                                         qq|dateaccessioned=$date_of_this_year%|
                                     ]
                                 },
                                 {
                                     title => 'D320',
+                                    label => "Nombre d'exemplaires 'Autres documents' Eliminations",
                                     based_query => $total_deleteditems_join_biblioitems_query,
                                 },
                             ]
@@ -1033,9 +1108,11 @@ sub get_blocks {
                             queries               => [
                                 {
                                     title => 'D401',
+                                    label => "Documents sonores: Musique Fonds",
                                 },
                                 {
                                     title => 'D402',
+                                    label => "Documents sonores: Musique Acquisitions",
                                     additional_conditions => [
                                         qq|dateaccessioned=$date_of_this_year%|
                                     ],
@@ -1048,9 +1125,11 @@ sub get_blocks {
                             queries => [
                                 {
                                     title => 'D405',
+                                    label => "Documents sonores : livres enregistrés Fonds",
                                 },
                                 {
                                     title => 'D406',
+                                    label => "Documents sonores : livres enregistrés Acquisitions",
                                     additional_conditions => [
                                         qq|dateaccessioned=$date_of_this_year%|
                                     ],
@@ -1066,9 +1145,11 @@ sub get_blocks {
                             queries => [
                                 {
                                     title => 'D409',
+                                    label => "Total Documents sonores Fonds",
                                 },
                                 {
                                     title => 'D410',
+                                    label => "Total Documents sonores Acquisitions",
                                     additional_conditions => [
                                         qq|dateaccessioned=$date_of_this_year%|
                                     ],
@@ -1081,9 +1162,11 @@ sub get_blocks {
                             queries               => [
                                 {
                                     title => 'D411',
+                                    label => "Total Documents vidéos Fonds",
                                 },
                                 {
                                     title => 'D412',
+                                    label => "Total Documents vidéos Acquisitions",
                                     additional_conditions => [
                                         qq|dateaccessioned=$date_of_this_year%|
                                     ],
@@ -1095,6 +1178,7 @@ sub get_blocks {
                             queries => [
                                 {
                                     title => 'D415',
+                                    label => "Total Documents sonores et vidéos Eliminitions",
                                     based_query => $total_deleteditems_join_biblioitems_query,
                                     additional_conditions => [[
                                         [@documents_sonores_musiques],
@@ -1104,16 +1188,19 @@ sub get_blocks {
                                 },
                                 {
                                     title => 'D416',
+                                    label => "Documents sonores: Musique Eliminations",
                                     based_query => $total_deleteditems_join_biblioitems_query,
                                     additional_conditions => [@documents_sonores_musiques],
                                 },
                                 {
                                     title => 'D417',
+                                    label => "Documents sonores : livres enregistrés Eliminations",
                                     additional_conditions => [@documents_sonores_livres_enregistres],
                                     based_query => $total_deleteditems_join_biblioitems_query,
                                 },
                                 {
                                     title => 'D418',
+                                    label => "Total Documents sonores Eliminations",
                                     additional_conditions => [[
                                         [@documents_sonores_musiques],
                                         [@documents_sonores_livres_enregistres],
@@ -1122,6 +1209,7 @@ sub get_blocks {
                                 },
                                 {
                                     title => 'D419',
+                                    label => "Total Documents vidéos Eliminitions",
                                     additional_conditions => [@documents_video],
                                     based_query => $total_deleteditems_join_biblioitems_query,
                                 },
@@ -1139,15 +1227,18 @@ sub get_blocks {
                                     queries               => [
                                         {
                                             title => 'D420',
+                                            label => "Nombre d'exemplaires 'Documents sonores : Musique' Fonds",
                                         },
                                         {
                                             title => 'D421',
+                                            label => "Nombre d'exemplaires 'Documents sonores : Musique' Acquisitions",
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
                                             ],
                                         },
                                         {
                                             title => 'D422',
+                                            label => "Nombre d'exemplaires 'Documents sonores : Musique' Eliminations",
                                             based_query => $total_deleteditems_join_biblioitems_query,
                                         },
                                     ]
@@ -1158,15 +1249,18 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'D423',
+                                            label => "Nombre d'exemplaires 'Documents sonores : livres enregistrés' Fonds",
                                         },
                                         {
                                             title => 'D424',
+                                            label => "Nombre d'exemplaires 'Documents sonores : livres enregistrés' Acquisitions",
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
                                             ],
                                         },
                                         {
                                             title => 'D425',
+                                            label => "Nombre d'exemplaires 'Documents sonores : livres enregistrés' Eliminations",
                                             based_query => $total_deleteditems_join_biblioitems_query,
                                         },
                                     ]
@@ -1180,15 +1274,18 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'D426',
+                                            label => "Total des 'Documents sonores' Adultes Fonds",
                                         },
                                         {
                                             title => 'D427',
+                                            label => "Total des 'Documents sonores' Adultes Acquisitions",
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
                                             ],
                                         },
                                         {
                                             title => 'D428',
+                                            label => "Total des 'Documents sonores' Adultes Eliminations",
                                             based_query => $total_deleteditems_join_biblioitems_query,
                                         },
                                     ]
@@ -1199,15 +1296,18 @@ sub get_blocks {
                                     queries               => [
                                         {
                                             title => 'D429',
+                                            label => "Nombre d'exemplaires 'Documents Vidéos' Fonds",
                                         },
                                         {
                                             title => 'D430',
+                                            label => "Nombre d'exemplaires 'Documents Vidéos : Musique' Acquisitions",
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
                                             ],
                                         },
                                         {
                                             title => 'D431',
+                                            label => "Nombre d'exemplaires 'Documents Vidéos' Eliminations",
                                             based_query => $total_deleteditems_join_biblioitems_query,
                                         },
                                     ]
@@ -1226,15 +1326,18 @@ sub get_blocks {
                                     queries               => [
                                         {
                                             title => 'D432',
+                                            label => "Nombre d'exemplaires 'Documents sonores : Musique' Fonds",
                                         },
                                         {
                                             title => 'D433',
+                                            label => "Nombre d'exemplaires 'Documents sonores : Musique' Acquisitions",
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
                                             ],
                                         },
                                         {
                                             title => 'D434',
+                                            label => "Nombre d'exemplaires 'Documents sonores : Musique' Eliminations",
                                             based_query => $total_deleteditems_join_biblioitems_query,
                                         },
                                     ]
@@ -1245,15 +1348,18 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'D435',
+                                            label => "Nombre d'exemplaires 'Documents sonores : livres enregistrés' Fonds",
                                         },
                                         {
                                             title => 'D436',
+                                            label => "Nombre d'exemplaires 'Documents sonores : livres enregistrés' Acquisitions",
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
                                             ],
                                         },
                                         {
                                             title => 'D437',
+                                            label => "Nombre d'exemplaires 'Documents sonores : livres enregistrés' Eliminations",
                                             based_query => $total_deleteditems_join_biblioitems_query,
                                         },
                                     ]
@@ -1267,15 +1373,18 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'D438',
+                                            label => "Total des 'Documents sonores' Enfants Fonds",
                                         },
                                         {
                                             title => 'D439',
+                                            label => "Total des 'Documents sonores' Enfants Acquisitions",
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
                                             ],
                                         },
                                         {
                                             title => 'D440',
+                                            label => "Total des 'Documents sonores' Enfants Eliminations",
                                             based_query => $total_deleteditems_join_biblioitems_query,
                                         },
                                     ]
@@ -1286,15 +1395,18 @@ sub get_blocks {
                                     queries               => [
                                         {
                                             title => 'D441',
+                                            label => "Nombre d'exemplaires 'Documents Vidéos' Fonds",
                                         },
                                         {
                                             title => 'D442',
+                                            label => "Nombre d'exemplaires 'Documents Vidéos : Musique' Acquisitions",
                                             additional_conditions => [
                                                 qq|dateaccessioned=$date_of_this_year%|
                                             ],
                                         },
                                         {
                                             title => 'D443',
+                                            label => "Nombre d'exemplaires 'Documents Vidéos' Eliminations",
                                             based_query => $total_deleteditems_join_biblioitems_query,
                                         },
                                     ]
@@ -1316,9 +1428,13 @@ sub get_blocks {
                                 [@documents_video],
                             ]],
                             queries => [
-                                { title => 'D506', },
                                 {
-                                    title                 => 'D507',
+                                    title => 'D506',
+                                    label => "Total Documents sonores et vidéo Fonds",
+                                },
+                                {
+                                    title => 'D507',
+                                    label => "Total Documents sonores et vidéo Acquisitions",
                                     additional_conditions => [
                                         qq|dateaccessioned>=$date_of_this_year-01-01|
                                     ],
@@ -1329,15 +1445,20 @@ sub get_blocks {
                             title => "Documents multimédia sur support",
                             additional_conditions => [@documents_multimedia],
                             queries => [
-                                { title => 'D517', },
+                                {
+                                    title => 'D517',
+                                    label => "Total documents multimédia sur support(cdrom+logiciel) enfants+adultes Fonds",
+                                },
                                 {
                                     title                 => 'D518',
+                                    label => "Total documents multimédia sur support(cdrom+logiciel) enfants+adultes Acquistions",
                                     additional_conditions => [
                                         qq|dateaccessioned=$date_of_this_year%|
                                     ],
                                 },
                                 {
                                     title => 'D519',
+                                    label => "Total documents multimédia sur support(cdrom+logiciel) enfants+adultes Eliminations",
                                     based_query => $total_deleteditems_join_biblioitems_query,
                                 },
                             ]
@@ -1369,10 +1490,12 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E104',
+                                            label => "Particuliers Enfants(0-14 ans) Hommes Inscrits actifs",
                                             additional_conditions => [q|sex=M|],
                                         },
                                         {
                                             title                 => 'E105',
+                                            label => "Particuliers Enfants(0-14 ans) Hommes Nouveaux inscrits",
                                             additional_conditions => [
                                                 q|sex=M|,
                                                 qq|dateenrolled=$date_of_this_year%|
@@ -1380,6 +1503,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E106',
+                                            label => "Particuliers Enfants(0-14 ans) Hommes Emprunteurs actifs",
                                             based_query => $total_borrowers_join_statistics_query,
                                             additional_conditions => [
                                                 q|sex=M|,
@@ -1389,10 +1513,12 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E107',
+                                            label => "Particuliers Enfants(0-14 ans) Femmes Inscrits actifs",
                                             additional_conditions => [q|sex=F|],
                                         },
                                         {
                                             title                 => 'E108',
+                                            label => "Particuliers Enfants(0-14 ans) Femmes Nouveaux inscrits",
                                             additional_conditions => [
                                                 q|sex=F|,
                                                 qq|dateenrolled=$date_of_this_year%|
@@ -1400,6 +1526,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E109',
+                                            label => "Particuliers Enfants(0-14 ans) Femmes Emprunteurs actifs",
                                             based_query => $total_borrowers_join_statistics_query,
                                             additional_conditions => [
                                                 q|sex=F|,
@@ -1407,15 +1534,20 @@ sub get_blocks {
                                                 q{statistics.type=issue|renew}
                                             ],
                                         },
-                                        { title => 'E110', },
+                                        {
+                                            title => 'E110',
+                                            label => "Total Particuliers Enfants(0-14 ans) Inscrits actifs",
+                                        },
                                         {
                                             title => 'E111',
+                                            label => "Total Particuliers Enfants(0-14 ans) Nouveaux inscrits",
                                             additional_conditions => [
                                                 qq|dateenrolled=$date_of_this_year%|
                                             ],
                                         },
                                         {
                                             title => 'E112',
+                                            label => "Total Particuliers Enfants(0-14 ans) Emprunteurs actifs",
                                             based_query => $total_borrowers_join_statistics_query,
                                             additional_conditions => [
                                                 qq|datetime=$date_of_this_year%|,
@@ -1434,11 +1566,12 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E113',
-                                            additional_conditions =>
-                                              [q|sex=M|],
+                                            label => "Particuliers Adultes(15-64 ans) Hommes Inscrits actifs",
+                                            additional_conditions => [q|sex=M|],
                                         },
                                         {
                                             title                 => 'E114',
+                                            label => "Particuliers Adultes(15-64 ans) Hommes Nouveaux inscrits",
                                             additional_conditions => [
                                                 q|sex=M|,
                                                 qq|dateenrolled=$date_of_this_year%|
@@ -1446,8 +1579,8 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E115',
-                                            based_query =>
-                                              $total_borrowers_join_statistics_query,
+                                            label => "Particuliers Adultes(15-64 ans) Hommes Emprunteurs actifs",
+                                            based_query => $total_borrowers_join_statistics_query,
                                             additional_conditions => [
                                                 q|sex=M|,
                                                 qq|datetime=$date_of_this_year%|,
@@ -1456,10 +1589,12 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E116',
+                                            label => "Particuliers Adultes(15-64 ans) Femmes Inscrits actifs",
                                             additional_conditions => [q|sex=F|],
                                         },
                                         {
                                             title                 => 'E117',
+                                            label => "Particuliers Adultes(15-64 ans) Femmes Nouveaux inscrits",
                                             additional_conditions => [
                                                 q|sex=F|,
                                                 qq|dateenrolled=$date_of_this_year%|
@@ -1467,6 +1602,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E118',
+                                            label => "Particuliers Adultes(15-64 ans) Femmes Emprunteurs actifs",
                                             based_query => $total_borrowers_join_statistics_query,
                                             additional_conditions => [
                                                 q|sex=F|,
@@ -1474,15 +1610,20 @@ sub get_blocks {
                                                 q{statistics.type=issue|renew}
                                             ],
                                         },
-                                        { title => 'E119', },
+                                        {
+                                            title => 'E119',
+                                            label => "Total Particuliers Adultes(15-64 ans) Inscrits actifs",
+                                        },
                                         {
                                             title => 'E120',
+                                            label => "Total Particuliers Adultes(15-64 ans) Nouveaux inscrits",
                                             additional_conditions => [
                                                 qq|dateenrolled=$date_of_this_year%|
                                             ],
                                         },
                                         {
                                             title => 'E121',
+                                            label => "Total Particuliers Adultes(15-64 ans) Emprunteurs actifs",
                                             based_query => $total_borrowers_join_statistics_query,
                                             additional_conditions => [
                                                 qq|datetime=$date_of_this_year%|,
@@ -1500,10 +1641,12 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E122',
+                                            label => "Particuliers Adultes(65 ans et plus) Hommes Inscrits actifs",
                                             additional_conditions => [q|sex=M|],
                                         },
                                         {
                                             title => 'E123',
+                                            label => "Particuliers Adultes(65 ans et plus) Hommes Nouveaux inscrits",
                                             additional_conditions => [
                                                 q|sex=M|,
                                                 qq|dateenrolled=$date_of_this_year%|
@@ -1511,6 +1654,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E124',
+                                            label => "Particuliers Adultes(65 ans et plus) Hommes Emprunteurs actifs",
                                             based_query => $total_borrowers_join_statistics_query,
                                             additional_conditions => [
                                                 q|sex=M|,
@@ -1520,11 +1664,13 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E125',
+                                            label => "Particuliers Adultes(65 ans et plus) Femmes Inscrits actifs",
                                             additional_conditions =>
                                               [q|sex=F|],
                                         },
                                         {
                                             title                 => 'E126',
+                                            label => "Particuliers Adultes(65 ans et plus) Femmes Nouveaux inscrits",
                                             additional_conditions => [
                                                 q|sex=F|,
                                                 qq|dateenrolled=$date_of_this_year%|
@@ -1532,6 +1678,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E127',
+                                            label => "Particuliers Adultes(65 ans et plus) Femmes Emprunteurs actifs",
                                             based_query => $total_borrowers_join_statistics_query,
                                             additional_conditions => [
                                                 q|sex=F|,
@@ -1539,13 +1686,18 @@ sub get_blocks {
                                                 q{statistics.type=issue|renew}
                                             ],
                                         },
-                                        { title => 'E128', },
+                                        {
+                                            title => 'E128',
+                                            label => "Total Particuliers Adultes(65 ans et plus) Inscrits actifs",
+                                        },
                                         {
                                             title => 'E129',
+                                            label => "Total Particuliers Adultes(65 ans et plus) Nouveaux inscrits",
                                             additional_conditions => [ qq|dateenrolled=$date_of_this_year%| ],
                                         },
                                         {
                                             title => 'E130',
+                                            label => "Total Particuliers Adultes(65 ans et plus) Emprunteurs actifs",
                                             based_query => $total_borrowers_join_statistics_query,
                                             additional_conditions => [
                                                 qq|datetime=$date_of_this_year%|,
@@ -1556,21 +1708,21 @@ sub get_blocks {
                                 },
                                 {
                                     title   => 'Total Adultes',
-                                    additional_conditions => [
-                                        [
-                                            [@adultes, @date_of_birth_adultes],
-                                            [@seniors, @date_of_birth_seniors],
-                                        ]
-                                    ],
+                                    additional_conditions => [[
+                                        [@adultes, @date_of_birth_adultes],
+                                        [@seniors, @date_of_birth_seniors],
+                                    ]],
                                     queries => [
                                         {
                                             title => 'E131',
+                                            label => "Total Particuliers Adultes Hommes Inscrits actifs",
                                             additional_conditions => [
                                                 q|sex=M|,
                                             ]
                                         },
                                         {
                                             title => 'E132',
+                                            label => "Total Particuliers Adultes Hommes Nouveaux inscrits",
                                             additional_conditions => [
                                                 q|sex=M|,
                                                 qq|dateenrolled=$date_of_this_year%|
@@ -1578,6 +1730,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E133',
+                                            label => "Total Particuliers Adultes Hommes Emprunteurs actifs",
                                             based_query => $total_borrowers_join_statistics_query,
                                             additional_conditions => [
                                                 q|sex=M|,
@@ -1587,12 +1740,14 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E134',
+                                            label => "Total Particuliers Adultes Femmes Inscrits actifs",
                                             additional_conditions => [
                                                 q|sex=F|,
                                             ]
                                         },
                                         {
                                             title => 'E135',
+                                            label => "Total Particuliers Adultes Femmes Nouveaux inscrits",
                                             additional_conditions => [
                                                 q|sex=F|,
                                                 qq|dateenrolled=$date_of_this_year%|
@@ -1600,6 +1755,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E136',
+                                            label => "Total Particuliers Adultes Femmes Emprunteurs actifs",
                                             based_query => $total_borrowers_join_statistics_query,
                                             additional_conditions => [
                                                 q|sex=F|,
@@ -1609,15 +1765,18 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E137',
+                                            label => "Total Particuliers Adultes Inscrits actifs",
                                         },
                                         {
                                             title => 'E138',
+                                            label => "Total Particuliers Adultes Nouveaux inscrits",
                                             additional_conditions => [
                                                 qq|dateenrolled=$date_of_this_year%|
                                             ]
                                         },
                                         {
                                             title => 'E139',
+                                            label => "Total Particuliers Adultes Emprunteurs actifs",
                                             based_query => $total_borrowers_join_statistics_query,
                                             additional_conditions => [
                                                 qq|datetime=$date_of_this_year%|,
@@ -1634,15 +1793,20 @@ sub get_blocks {
                                         [@seniors, @date_of_birth_seniors],
                                     ]],
                                     queries => [
-                                        { title => 'E101', },
+                                        {
+                                            title => 'E101',
+                                            label => "Total Particuliers (enfants et adultes) Inscrits actifs",
+                                        },
                                         {
                                             title                 => 'E102',
+                                            label => "Total Particuliers (enfants et adultes) Nouveaux inscrits",
                                             additional_conditions => [
                                                 qq|dateenrolled=$date_of_this_year%|
                                             ]
                                         },
                                         {
                                             title => 'E103',
+                                            label => "Total Particuliers (enfants et adultes) Emprunteurs actifs",
                                             based_query => $total_borrowers_join_statistics_query,
                                             additional_conditions => [
                                                 qq|datetime=$date_of_this_year%|,
@@ -1651,12 +1815,14 @@ sub get_blocks {
                                         },
                                         {
                                             title                 => 'E140',
+                                            label => "Total Particuliers (enfants et adultes) de la commune ou du réseau Inscrits actifs",
                                             additional_conditions => [
                                                 @residents_dans_la_commune
                                             ],
                                         },
                                         {
                                             title                 => 'E141',
+                                            label => "Total Particuliers (enfants et adultes) de la commune ou du réseau Nouveaux Inscrits",
                                             additional_conditions => [
                                                 @residents_dans_la_commune,
                                                 qq|dateenrolled=$date_of_this_year%|
@@ -1664,6 +1830,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E142',
+                                            label => "Total Particuliers (enfants et adultes) de la commune ou du réseau Emprunteurs actifs",
                                             based_query => $total_borrowers_join_statistics_query,
                                             additional_conditions => [
                                                 @residents_dans_la_commune,
@@ -1682,11 +1849,13 @@ sub get_blocks {
                             queries               => [
                                 {
                                     title => 'E143',
+                                    label => "Collectivités Nouveaux Inscrits",
                                     additional_conditions =>
                                       [qq|dateenrolled=$date_of_this_year%|],
                                 },
                                 {
                                     title => 'E144',
+                                    label => "Collectivités Emprunteurs actifs",
                                     based_query => $total_borrowers_join_statistics_query,
                                     additional_conditions => [
                                         qq|datetime=$date_of_this_year%|,
@@ -1716,6 +1885,7 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E201',
+                                            label => "Total Prêts Livres Adultes",
                                             additional_conditions => [[
                                                 [@adultes, @date_of_birth_adultes],
                                                 [@seniors, @date_of_birth_seniors],
@@ -1723,6 +1893,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E202',
+                                            label => "Total Prêts Livres Enfants",
                                             additional_conditions => [
                                                 @enfants,
                                                 @date_of_birth_enfants,
@@ -1730,6 +1901,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E203',
+                                            label => "Total Prêts Livres",
                                             additional_conditions => [[
                                                 [@enfants, @date_of_birth_enfants],
                                                 [@adultes, @date_of_birth_adultes],
@@ -1744,6 +1916,7 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E205',
+                                            label => "Total Prêts Publications en série Adultes",
                                             additional_conditions => [[
                                                 [@adultes, @date_of_birth_adultes],
                                                 [@seniors, @date_of_birth_seniors],
@@ -1751,6 +1924,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E206',
+                                            label => "Total Prêts Publications en série Enfants",
                                             additional_conditions => [
                                                 @enfants,
                                                 @date_of_birth_enfants,
@@ -1758,6 +1932,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E207',
+                                            label => "Total Prêts Publications en série",
                                             additional_conditions => [[
                                                 [@enfants, @date_of_birth_enfants],
                                                 [@adultes, @date_of_birth_adultes],
@@ -1772,6 +1947,7 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E209',
+                                            label => "Total Prêts Documents sonores : Musique Adultes",
                                             additional_conditions => [[
                                                 [@adultes, @date_of_birth_adultes],
                                                 [@seniors, @date_of_birth_seniors],
@@ -1779,6 +1955,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E210',
+                                            label => "Total Prêts Documents sonores : Musique Enfants",
                                             additional_conditions => [
                                                 @enfants,
                                                 @date_of_birth_enfants,
@@ -1786,6 +1963,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E211',
+                                            label => "Total Prêts Documents sonores : Musique",
                                             additional_conditions => [[
                                                 [@enfants, @date_of_birth_enfants],
                                                 [@adultes, @date_of_birth_adultes],
@@ -1800,6 +1978,7 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E213',
+                                            label => "Total Prêts Documents sonores : Livres Adultes",
                                             additional_conditions => [[
                                                 [@adultes, @date_of_birth_adultes],
                                                 [@seniors, @date_of_birth_seniors],
@@ -1807,6 +1986,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E214',
+                                            label => "Total Prêts Documents sonores : Livres Enfants",
                                             additional_conditions => [
                                                 @enfants,
                                                 @date_of_birth_enfants,
@@ -1814,6 +1994,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E215',
+                                            label => "Total Prêts Documents sonores : Livres",
                                             additional_conditions => [[
                                                 [@enfants, @date_of_birth_enfants],
                                                 [@adultes, @date_of_birth_adultes],
@@ -1828,6 +2009,7 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E217',
+                                            label => "Total Prêts Documents Vidéos Adultes",
                                             additional_conditions => [[
                                                 [@adultes, @date_of_birth_adultes],
                                                 [@seniors, @date_of_birth_seniors],
@@ -1835,6 +2017,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E218',
+                                            label => "Total Prêts Documents Vidéos Enfants",
                                             additional_conditions => [
                                                 @enfants,
                                                 @date_of_birth_enfants,
@@ -1842,6 +2025,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E219',
+                                            label => "Total Prêts Documents Vidéos",
                                             additional_conditions => [[
                                                 [@enfants, @date_of_birth_enfants],
                                                 [@adultes, @date_of_birth_adultes],
@@ -1856,6 +2040,7 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E221',
+                                            label => "Total Prêts Autres Documents Adultes",
                                             additional_conditions => [[
                                                 [@adultes, @date_of_birth_adultes],
                                                 [@seniors, @date_of_birth_seniors],
@@ -1863,6 +2048,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E222',
+                                            label => "Total Prêts Autres Documents Enfants",
                                             additional_conditions => [
                                                 @enfants,
                                                 @date_of_birth_enfants,
@@ -1870,6 +2056,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E223',
+                                            label => "Total Prêts Autres Documents Livres",
                                             additional_conditions => [[
                                                 [@enfants, @date_of_birth_enfants],
                                                 [@adultes, @date_of_birth_adultes],
@@ -1884,6 +2071,7 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E225',
+                                            label => "Total Prêts Livres numériques avec support Adultes",
                                             additional_conditions => [[
                                                 [@adultes, @date_of_birth_adultes],
                                                 [@seniors, @date_of_birth_seniors],
@@ -1891,6 +2079,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E226',
+                                            label => "Total Prêts Livres numériques avec support Enfants",
                                             additional_conditions => [
                                                 @enfants,
                                                 @date_of_birth_enfants,
@@ -1898,6 +2087,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E227',
+                                            label => "Total Prêts Livres numériques avec support Livres",
                                             additional_conditions => [[
                                                 [@enfants, @date_of_birth_enfants],
                                                 [@adultes, @date_of_birth_adultes],
@@ -1911,6 +2101,7 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E237',
+                                            label => "Total Prêts Adultes",
                                             additional_conditions => [[
                                                 [@adultes, @date_of_birth_adultes],
                                                 [@seniors, @date_of_birth_seniors],
@@ -1918,6 +2109,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E238',
+                                            label => "Total Prêts Enfants",
                                             additional_conditions => [
                                                 @enfants,
                                                 @date_of_birth_enfants,
@@ -1925,6 +2117,7 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E239',
+                                            label => "Total Prêts (Adultes et Enfants)",
                                             additional_conditions => [[
                                                 [@enfants, @date_of_birth_enfants],
                                                 [@adultes, @date_of_birth_adultes],
@@ -1946,6 +2139,7 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E204',
+                                            label => "Total Prêts Livres (aux collectivités)",
                                         },
                                     ],
                                 },
@@ -1955,6 +2149,7 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E208',
+                                            label => "Total Prêts Publications en série (aux collectivités)",
                                         },
                                     ],
                                 },
@@ -1964,6 +2159,7 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E212',
+                                            label => "Total Prêts  Documents sonores : Musique(aux collectivités)",
                                         },
                                     ],
                                 },
@@ -1973,6 +2169,7 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E216',
+                                            label => "Total Prêts  Documents sonores : Livres(aux collectivités)",
                                         },
                                     ],
                                 },
@@ -1982,6 +2179,7 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E220',
+                                            label => "Total Prêts  Documents vidéo (aux collectivités)",
                                         },
                                     ],
                                 },
@@ -1991,6 +2189,7 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E224',
+                                            label => "Total Prêts Autres Documents (aux colectivités)",
                                         },
                                     ],
                                 },
@@ -1999,6 +2198,7 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E240',
+                                            label => "Total Prêts aux collectivités",
                                         },
                                     ],
                                 },
@@ -2011,6 +2211,7 @@ sub get_blocks {
                     queries => [
                         {
                             title => 'E301',
+                            label => "Nombre de consultations sur place",
                             based_query => $total_statistics_join_borrowers_items_biblioitems_query,
                             groupby => 'homebranch',
                             additional_conditions => [
@@ -2019,6 +2220,7 @@ sub get_blocks {
                         },
                         {
                             title => 'E302',
+                            label => "Nombre de réservations",
                             based_query => $total_old_reserves_query,
                             groupby => 'branchcode',
                             additional_conditions => [
@@ -2027,6 +2229,7 @@ sub get_blocks {
                         },
                         {
                             title => 'E306',
+                            label => "Prêts entre Bibliothèques - Documents reçus",
                             based_query => $total_deleteditems_query,
                             groupby => 'holdingbranch',
                             additional_conditions => [
@@ -2036,6 +2239,7 @@ sub get_blocks {
                         },
                         {
                             title => 'E307',
+                            label => "Prêts entre Bibliothèques - Documents fournis",
                             based_query => $total_statistics_join_borrowers_items_biblioitems_query,
                             groupby => 'homebranch',
                             additional_conditions => [
