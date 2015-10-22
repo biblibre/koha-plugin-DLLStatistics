@@ -1,6 +1,19 @@
 [% INCLUDE 'doc-head-open.inc' %]
  <title>Koha: DLL Statistics plugin: Run</title>
 [% INCLUDE 'doc-head-close.inc' %]
+<script type="text/javascript" src="[% interface %]/lib/jquery/plugins/jquery-ui-timepicker-addon.min.js"></script>
+[% INCLUDE 'timepicker.inc' %]
+<script>
+  $(document).ready(function() {
+    $('#time').datetimepicker({
+      timeFormat: "HHmm",
+      pickerTimeFormat: "HH:mm",
+      stepMinute: 5,
+      dateFormat: "yymmdd",
+      separator: "",
+    });
+  });
+</script>
 </head>
 <body>
 [% INCLUDE 'header.inc' %]
@@ -19,13 +32,23 @@
 <div id="doc3">
     <h3>Koha: DLL Statistics Plugin: Run</h3>
 
+    <p>
+      Calculating DLL statistics can take time and resources.
+      It is recommended to run it during inactivity periods (like the night).
+    </p>
+
+    <p>
+      Use the following tool to schedule statistics calculation.
+      Results will be sent to your email address.
+    </p>
+
     <form>
         <input type="hidden" name="class" value="[% CLASS %]"/>
         <input type="hidden" name="method" value="[% METHOD %]"/>
 
         <div>
-            <label>Time</label>
-            <input type="text" name="time">
+            <label for="time">Time</label>
+            <input type="text" name="time" id="time">
         </div>
         <div>
             <label>Year</label>
