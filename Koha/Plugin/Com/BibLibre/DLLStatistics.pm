@@ -870,22 +870,20 @@ sub get_blocks {
                                     title => 'D201',
                                     based_query => $total_subscriptionid_from_subscription_join_items_join_biblioitems_query,
                                     additional_conditions => [
-                                        qq|enddate>="$date_of_this_year-01-01"|,
-                                        qq|dateaccessioned="$date_of_this_year%"|
+                                        qq|enddate>=$date_of_this_year-01-01|,
                                     ]
                                 },
                                 {
                                     title => 'D202',
                                     based_query => $total_biblionumber_from_subscription_join_items_join_biblioitems_query,
                                     additional_conditions => [
-                                        qq|enddate>="$date_of_this_year-01-01"|,
-                                        qq|dateaccessioned="$date_of_this_year%"|
+                                        qq|enddate>=$date_of_this_year-01-01|,
                                     ]
                                 },
                                 {
                                     title => 'D208',
                                     based_query => $total_biblionumber_from_subscription_join_items_join_biblioitems_query,
-                                    additional_conditions => [qq|enddate>="$date_of_this_year-01-01"|]
+                                    additional_conditions => [qq|enddate>=$date_of_this_year-01-01|]
                                 }
                             ]
                         },
@@ -897,22 +895,22 @@ sub get_blocks {
                                     title => 'D203',
                                     based_query => $total_subscriptionid_from_subscription_join_items_join_biblioitems_query,
                                     additional_conditions => [
-                                        qq|enddate>="$date_of_this_year-01-01"|,
-                                        qq|dateaccessioned="$date_of_this_year%"|
+                                        qq|enddate>=$date_of_this_year-01-01|,
                                     ]
                                 },
                                 {
                                     title => 'D204',
                                     based_query => $total_biblionumber_from_subscription_join_items_join_biblioitems_query,
                                     additional_conditions => [
-                                        qq|enddate>="$date_of_this_year-01-01"|,
-                                        qq|dateaccessioned="$date_of_this_year%"|
+                                        qq|enddate>=$date_of_this_year-01-01|,
                                     ]
                                 },
                                 {
                                     title => 'D210',
                                     based_query => $total_biblionumber_from_subscription_join_items_join_biblioitems_query,
-                                    additional_conditions => [qq|enddate>="$date_of_this_year-01-01"|]
+                                    additional_conditions => [
+                                        qq|enddate>=$date_of_this_year-01-01|,
+                                    ]
                                 }
                             ]
                         }
@@ -934,7 +932,7 @@ sub get_blocks {
                                 {
                                     title => 'D306',
                                     additional_conditions => [
-                                        qq|dateaccessioned="$date_of_this_year%"|
+                                        qq|dateaccessioned=$date_of_this_year%|,
                                     ]
                                 },
                             ]
@@ -950,7 +948,7 @@ sub get_blocks {
                                 {
                                     title => 'D308',
                                     additional_conditions => [
-                                        qq|dateaccessioned="$date_of_this_year%"|
+                                        qq|dateaccessioned=$date_of_this_year%|,
                                     ]
                                 },
                             ]
@@ -966,7 +964,7 @@ sub get_blocks {
                                 {
                                     title => 'D310',
                                     additional_conditions => [
-                                        qq|dateaccessioned="$date_of_this_year%"|
+                                        qq|dateaccessioned=$date_of_this_year%|,
                                     ]
                                 },
                                 {
@@ -981,7 +979,7 @@ sub get_blocks {
                                     title => 'D313',
                                     based_query => $total_biblio_join_items_query,
                                     additional_conditions => [
-                                        qq|dateaccessioned="$date_of_this_year%"|
+                                        qq|dateaccessioned=$date_of_this_year%|
                                     ]
                                 },
                             ]
@@ -997,7 +995,7 @@ sub get_blocks {
                                 {
                                     title => 'D315',
                                     additional_conditions => [
-                                        qq|dateaccessioned="$date_of_this_year%"|
+                                        qq|dateaccessioned=$date_of_this_year%|
                                     ]
                                 },
                             ]
@@ -1013,7 +1011,7 @@ sub get_blocks {
                                 {
                                     title => 'D319',
                                     additional_conditions => [
-                                        qq|dateaccessioned="$date_of_this_year%"|
+                                        qq|dateaccessioned=$date_of_this_year%|
                                     ]
                                 },
                                 {
@@ -1061,10 +1059,10 @@ sub get_blocks {
                         },
                         {
                             title                 => "Total documents sonores",
-                            additional_conditions => [
-                                @documents_sonores_musiques,
-                                @documents_sonores_livres_enregistres
-                            ],
+                            additional_conditions => [[
+                                [@documents_sonores_musiques],
+                                [@documents_sonores_livres_enregistres],
+                            ]],
                             queries => [
                                 {
                                     title => 'D409',
@@ -1098,11 +1096,11 @@ sub get_blocks {
                                 {
                                     title => 'D415',
                                     based_query => $total_deleteditems_join_biblioitems_query,
-                                    additional_conditions => [
-                                        @documents_sonores_musiques,
-                                        @documents_sonores_livres_enregistres,
-                                        @documents_video
-                                    ],
+                                    additional_conditions => [[
+                                        [@documents_sonores_musiques],
+                                        [@documents_sonores_livres_enregistres],
+                                        [@documents_video],
+                                    ]],
                                 },
                                 {
                                     title => 'D416',
@@ -1116,10 +1114,10 @@ sub get_blocks {
                                 },
                                 {
                                     title => 'D418',
-                                    additional_conditions => [
-                                        @documents_sonores_musiques,
-                                        @documents_sonores_livres_enregistres,
-                                    ],
+                                    additional_conditions => [[
+                                        [@documents_sonores_musiques],
+                                        [@documents_sonores_livres_enregistres],
+                                    ]],
                                     based_query => $total_deleteditems_join_biblioitems_query,
                                 },
                                 {
@@ -1175,10 +1173,10 @@ sub get_blocks {
                                 },
                                 {
                                     title                 => "Total documents sonores",
-                                    additional_conditions => [
-                                        @documents_sonores_musiques,
-                                        @documents_sonores_livres_enregistres
-                                    ],
+                                    additional_conditions => [[
+                                        [@documents_sonores_musiques],
+                                        [@documents_sonores_livres_enregistres],
+                                    ]],
                                     queries => [
                                         {
                                             title => 'D426',
@@ -1262,10 +1260,10 @@ sub get_blocks {
                                 },
                                 {
                                     title                 => "Total documents sonores",
-                                    additional_conditions => [
-                                        @documents_sonores_musiques,
-                                        @documents_sonores_livres_enregistres
-                                    ],
+                                    additional_conditions => [[
+                                        [@documents_sonores_musiques],
+                                        [@documents_sonores_livres_enregistres],
+                                    ]],
                                     queries => [
                                         {
                                             title => 'D438',
@@ -1312,11 +1310,11 @@ sub get_blocks {
                     blocks => [
                         {
                             title => "Autres documents numériques",
-                            additional_conditions => [
-                                @documents_sonores_musiques,
-                                @documents_sonores_livres_enregistres,
-                                @documents_video
-                            ],
+                            additional_conditions => [[
+                                [@documents_sonores_musiques],
+                                [@documents_sonores_livres_enregistres],
+                                [@documents_video],
+                            ]],
                             queries => [
                                 { title => 'D506', },
                                 {
@@ -1630,13 +1628,11 @@ sub get_blocks {
                                 },
                                 {
                                     title   => 'Total',
-                                    additional_conditions => [
-                                        [
-                                            [@enfants, @date_of_birth_enfants],
-                                            [@adultes, @date_of_birth_adultes],
-                                            [@seniors, @date_of_birth_seniors],
-                                        ]
-                                    ],
+                                    additional_conditions => [[
+                                        [@enfants, @date_of_birth_enfants],
+                                        [@adultes, @date_of_birth_adultes],
+                                        [@seniors, @date_of_birth_seniors],
+                                    ]],
                                     queries => [
                                         { title => 'E101', },
                                         {
@@ -1720,12 +1716,10 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E201',
-                                            additional_conditions => [
-                                                [
-                                                    [@adultes, @date_of_birth_adultes],
-                                                    [@seniors, @date_of_birth_seniors],
-                                                ]
-                                            ],
+                                            additional_conditions => [[
+                                                [@adultes, @date_of_birth_adultes],
+                                                [@seniors, @date_of_birth_seniors],
+                                            ]],
                                         },
                                         {
                                             title => 'E202',
@@ -1736,13 +1730,11 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E203',
-                                            additional_conditions => [
-                                                [
-                                                    [@enfants, @date_of_birth_enfants],
-                                                    [@adultes, @date_of_birth_adultes],
-                                                    [@seniors, @date_of_birth_seniors],
-                                                ]
-                                            ],
+                                            additional_conditions => [[
+                                                [@enfants, @date_of_birth_enfants],
+                                                [@adultes, @date_of_birth_adultes],
+                                                [@seniors, @date_of_birth_seniors],
+                                            ]],
                                         },
                                     ],
                                 },
@@ -1752,12 +1744,10 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E205',
-                                            additional_conditions => [
-                                                [
-                                                    [@adultes, @date_of_birth_adultes],
-                                                    [@seniors, @date_of_birth_seniors],
-                                                ]
-                                            ],
+                                            additional_conditions => [[
+                                                [@adultes, @date_of_birth_adultes],
+                                                [@seniors, @date_of_birth_seniors],
+                                            ]],
                                         },
                                         {
                                             title => 'E206',
@@ -1768,13 +1758,11 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E207',
-                                            additional_conditions => [
-                                                [
-                                                    [@enfants, @date_of_birth_enfants],
-                                                    [@adultes, @date_of_birth_adultes],
-                                                    [@seniors, @date_of_birth_seniors],
-                                                ]
-                                            ],
+                                            additional_conditions => [[
+                                                [@enfants, @date_of_birth_enfants],
+                                                [@adultes, @date_of_birth_adultes],
+                                                [@seniors, @date_of_birth_seniors],
+                                            ]],
                                         },
                                     ],
                                 },
@@ -1784,12 +1772,10 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E209',
-                                            additional_conditions => [
-                                                [
-                                                    [@adultes, @date_of_birth_adultes],
-                                                    [@seniors, @date_of_birth_seniors],
-                                                ]
-                                            ],
+                                            additional_conditions => [[
+                                                [@adultes, @date_of_birth_adultes],
+                                                [@seniors, @date_of_birth_seniors],
+                                            ]],
                                         },
                                         {
                                             title => 'E210',
@@ -1800,13 +1786,11 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E211',
-                                            additional_conditions => [
-                                                [
-                                                    [@enfants, @date_of_birth_enfants],
-                                                    [@adultes, @date_of_birth_adultes],
-                                                    [@seniors, @date_of_birth_seniors],
-                                                ]
-                                            ],
+                                            additional_conditions => [[
+                                                [@enfants, @date_of_birth_enfants],
+                                                [@adultes, @date_of_birth_adultes],
+                                                [@seniors, @date_of_birth_seniors],
+                                            ]],
                                         },
                                     ],
                                 },
@@ -1816,12 +1800,10 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E213',
-                                            additional_conditions => [
-                                                [
-                                                    [@adultes, @date_of_birth_adultes],
-                                                    [@seniors, @date_of_birth_seniors],
-                                                ]
-                                            ],
+                                            additional_conditions => [[
+                                                [@adultes, @date_of_birth_adultes],
+                                                [@seniors, @date_of_birth_seniors],
+                                            ]],
                                         },
                                         {
                                             title => 'E214',
@@ -1832,13 +1814,11 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E215',
-                                            additional_conditions => [
-                                                [
-                                                    [@enfants, @date_of_birth_enfants],
-                                                    [@adultes, @date_of_birth_adultes],
-                                                    [@seniors, @date_of_birth_seniors],
-                                                ]
-                                            ],
+                                            additional_conditions => [[
+                                                [@enfants, @date_of_birth_enfants],
+                                                [@adultes, @date_of_birth_adultes],
+                                                [@seniors, @date_of_birth_seniors],
+                                            ]],
                                         },
                                     ],
                                 },
@@ -1848,12 +1828,10 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E217',
-                                            additional_conditions => [
-                                                [
-                                                    [@adultes, @date_of_birth_adultes],
-                                                    [@seniors, @date_of_birth_seniors],
-                                                ]
-                                            ],
+                                            additional_conditions => [[
+                                                [@adultes, @date_of_birth_adultes],
+                                                [@seniors, @date_of_birth_seniors],
+                                            ]],
                                         },
                                         {
                                             title => 'E218',
@@ -1864,13 +1842,11 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E219',
-                                            additional_conditions => [
-                                                [
-                                                    [@enfants, @date_of_birth_enfants],
-                                                    [@adultes, @date_of_birth_adultes],
-                                                    [@seniors, @date_of_birth_seniors],
-                                                ]
-                                            ],
+                                            additional_conditions => [[
+                                                [@enfants, @date_of_birth_enfants],
+                                                [@adultes, @date_of_birth_adultes],
+                                                [@seniors, @date_of_birth_seniors],
+                                            ]],
                                         },
                                     ],
                                 },
@@ -1880,12 +1856,10 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E221',
-                                            additional_conditions => [
-                                                [
-                                                    [@adultes, @date_of_birth_adultes],
-                                                    [@seniors, @date_of_birth_seniors],
-                                                ]
-                                            ],
+                                            additional_conditions => [[
+                                                [@adultes, @date_of_birth_adultes],
+                                                [@seniors, @date_of_birth_seniors],
+                                            ]],
                                         },
                                         {
                                             title => 'E222',
@@ -1896,13 +1870,11 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E223',
-                                            additional_conditions => [
-                                                [
-                                                    [@enfants, @date_of_birth_enfants],
-                                                    [@adultes, @date_of_birth_adultes],
-                                                    [@seniors, @date_of_birth_seniors],
-                                                ]
-                                            ],
+                                            additional_conditions => [[
+                                                [@enfants, @date_of_birth_enfants],
+                                                [@adultes, @date_of_birth_adultes],
+                                                [@seniors, @date_of_birth_seniors],
+                                            ]],
                                         },
                                     ],
                                 },
@@ -1912,12 +1884,10 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E225',
-                                            additional_conditions => [
-                                                [
-                                                    [@adultes, @date_of_birth_adultes],
-                                                    [@seniors, @date_of_birth_seniors],
-                                                ]
-                                            ],
+                                            additional_conditions => [[
+                                                [@adultes, @date_of_birth_adultes],
+                                                [@seniors, @date_of_birth_seniors],
+                                            ]],
                                         },
                                         {
                                             title => 'E226',
@@ -1928,13 +1898,11 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E227',
-                                            additional_conditions => [
-                                                [
-                                                    [@enfants, @date_of_birth_enfants],
-                                                    [@adultes, @date_of_birth_adultes],
-                                                    [@seniors, @date_of_birth_seniors],
-                                                ]
-                                            ],
+                                            additional_conditions => [[
+                                                [@enfants, @date_of_birth_enfants],
+                                                [@adultes, @date_of_birth_adultes],
+                                                [@seniors, @date_of_birth_seniors],
+                                            ]],
                                         },
                                     ],
                                 },
@@ -1943,12 +1911,10 @@ sub get_blocks {
                                     queries => [
                                         {
                                             title => 'E237',
-                                            additional_conditions => [
-                                                [
-                                                    [@adultes, @date_of_birth_adultes],
-                                                    [@seniors, @date_of_birth_seniors],
-                                                ]
-                                            ],
+                                            additional_conditions => [[
+                                                [@adultes, @date_of_birth_adultes],
+                                                [@seniors, @date_of_birth_seniors],
+                                            ]],
                                         },
                                         {
                                             title => 'E238',
@@ -1959,13 +1925,11 @@ sub get_blocks {
                                         },
                                         {
                                             title => 'E239',
-                                            additional_conditions => [
-                                                [
-                                                    [@enfants, @date_of_birth_enfants],
-                                                    [@adultes, @date_of_birth_adultes],
-                                                    [@seniors, @date_of_birth_seniors],
-                                                ]
-                                            ],
+                                            additional_conditions => [[
+                                                [@enfants, @date_of_birth_enfants],
+                                                [@adultes, @date_of_birth_adultes],
+                                                [@seniors, @date_of_birth_seniors],
+                                            ]],
                                         },
                                     ],
                                 },
