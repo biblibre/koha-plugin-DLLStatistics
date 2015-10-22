@@ -288,7 +288,9 @@ sub build_where {
                   ? ($not ? "$not " : '' ) . "$field LIKE ?"
                   : $v =~ m|^NULL$|
                     ? "$field IS " . ( $not ? "$not " : '' ) . "NULL"
-                    : "$field $operator ?";
+                    : ($operator eq '=' or $operator eq '!=')
+                      ? "$not $field <=> ?"
+                      : "$field $operator ?";
                 push @args, $v unless $v =~ m|^NULL$| ;
             }
             push @where, '( ' . join( " OR ", @sub_where ) . ' )';
@@ -458,6 +460,59 @@ sub process_block {
     return $output;
 }
 
+sub negate_r {
+    my ($self, $depth, @conditions) = @_;
+
+    my @newconditions;
+    foreach my $condition (@conditions) {
+        my $newcondition;
+
+        if (not ref $condition) {
+            if ($condition =~ /^(?<field>(\w|\.)*)((?<operator>(!|<|>|=)+))(?<value>.*)$/) {
+                my ($field, $operator, $value) = ($+{field}, $+{operator}, $+{value});
+                my $newoperator =
+                    $operator eq '=' ? '!=' :
+                    $operator eq '!=' ? '=' :
+                    $operator eq '>=' ? '<' :
+                    $operator eq '>' ? '<=' :
+                    $operator eq '<=' ? '>' :
+                    $operator eq '<' ? '>=' : '';
+
+                # If value contains pipes, we need to split here in order to
+                # negate the query correctly
+                if ($value =~ /\|/) {
+                    $newcondition = [];
+                    foreach my $v (split /\|/, $value) {
+                        push @$newcondition, $field . $newoperator . $v;
+                    }
+                    if ($depth % 2) {
+                        # We are already at "OR depth", add another level of
+                        # depth so that conditions are correctly OR'ed
+                        $newcondition = [ $newcondition ];
+                    }
+                } else {
+                    $newcondition = $field . $newoperator . $value;
+                }
+            } else {
+                warn "Bad format";
+            }
+        } else {
+            $newcondition = [ $self->negate_r($depth + 1, @$condition) ];
+        }
+
+        push @newconditions, $newcondition;
+    }
+
+    return @newconditions;
+}
+
+sub negate {
+    my ($self, $condition) = @_;
+
+    # Make all arrays one level deeper, so that AND becomes OR and vice versa
+    return [[ $self->negate_r(0, @$condition) ]];
+}
+
 sub get_blocks {
     my ($self, $date_of_this_year) = @_;
 
@@ -561,6 +616,13 @@ sub get_blocks {
         SELECT branchcode, COUNT(DISTINCT(borrowers.borrowernumber)) as total
         FROM borrowers
         JOIN statistics ON borrowers.borrowernumber = statistics.borrowernumber
+        WHERE 1
+    |;
+
+    my $total_borrowers_by_categorycode_query = q|
+        SELECT borrowers.categorycode, count(*) as total
+        FROM borrowers
+        JOIN categories ON (borrowers.categorycode = categories.categorycode)
         WHERE 1
     |;
 
@@ -2251,8 +2313,83 @@ sub get_blocks {
                     ],
                 },
             ]
-        }
+        },
+        {
+            title => 'Z - Potential issues',
+            blocks => [
+                {
+                    title => 'Z1 - Items',
+                    queries => [
+                        {
+                            title => 'Z101',
+                            label => "Exemplaires ayant un public différent de Adulte ou Enfant",
+                            based_query => $total_item_join_biblioitems_query,
+                            groupby => 'homebranch',
+                            additional_conditions => $self->negate([[
+                                [@audience_enfants],
+                                [@audience_adultes],
+                            ]]),
+                        },
+                        {
+                            title => 'Z102',
+                            label => "Exemplaires ayant un type de document non-identifié",
+                            based_query => $total_item_join_biblioitems_query,
+                            groupby => 'homebranch',
+                            additional_conditions => $self->negate([[
+                                [@livres_imprimes],
+                                [@publications_en_serie_imprimees],
+                                [@microformes],
+                                [@documents_cartographiques],
+                                [@musique_imprimee],
+                                [@documents_graphiques],
+                                [@documents_sonores_musiques],
+                                [@documents_sonores_livres_enregistres],
+                                [@documents_video],
+                                [@documents_multimedia],
+                                [@livres_numeriques],
+                                [@autres_documents],
+                            ]]),
+                        },
+                    ],
+                },
+                {
+                    title => 'Z2 - Adhérents',
+                    based_query => $total_borrowers_by_categorycode_query,
+                    groupby => 'categorycode',
+                    queries => [
+                        {
+                            title => 'Z201',
+                            label => "Adhérents sans date de naissance (non-collectivités)",
+                            additional_conditions => [
+                                [q|dateofbirth=NULL|, q|dateofbirth!=_%|],
+                                q|category_type!=C|,
+                            ],
+                        },
+                        {
+                            title => 'Z202',
+                            label => "Adhérents sans sexe (non-collectivités)",
+                            additional_conditions => [
+                                q|sex!=F|,
+                                q|sex!=M|,
+                                q|category_type!=C|,
+                            ],
+                        },
+                        {
+                            title => 'Z203',
+                            label => "Adhérents sans sexe et sans date de naissance (non-collectivités)",
+                            additional_conditions => [
+                                [q|dateofbirth=NULL|, q|dateofbirth!=_%|],
+                                q|sex!=F|,
+                                q|sex!=M|,
+                                q|category_type!=C|,
+                            ],
+                        },
+                    ],
+                },
+            ],
+        },
     ];
     return $blocks;
 }
+
 1;
