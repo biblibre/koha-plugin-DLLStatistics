@@ -12,7 +12,7 @@ use C4::Output;
 use C4::Scheduler;
 use MIME::Lite;
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 our $metadata = {
     name   => 'DLL Statistics',
