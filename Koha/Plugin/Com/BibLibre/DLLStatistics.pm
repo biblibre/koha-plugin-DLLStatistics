@@ -216,6 +216,7 @@ sub get_original_conditions {
     if ( $type eq 'biblio' ) {
         my $barcodes_to_exclude = $conf->{barcodes_to_exclude};
         my $branches_to_exclude = $conf->{branches_to_exclude};
+        my $depouillement = $conf->{depouillement};
         my $separator = $self->get_separator();
         if ($barcodes_to_exclude) {
             for my $barcode ( split $separator, $barcodes_to_exclude ) {
@@ -226,6 +227,9 @@ sub get_original_conditions {
             for my $branch ( split $separator, $branches_to_exclude ) {
                 push @original_conditions, qq|homebranch!=$branch|;
             }
+        }
+        if ($depouillement) {
+            push @original_conditions, @{ $self->negate($depouillement) };
         }
     } elsif ( $type eq 'borrower' ) {
         # Nothing here at the moment
@@ -563,6 +567,8 @@ sub get_blocks {
 
     my $peb_branchcode = $conf->{peb_branchcode};
     my $peb_categorycode = $conf->{peb_categorycode};
+
+    my @depouillement = @{ $conf->{depouillement} };
 
     my $total_items_query = q|
         SELECT homebranch, COUNT(DISTINCT(biblionumber)) as total
@@ -2321,10 +2327,37 @@ sub get_blocks {
             title => 'Z - Potential issues',
             blocks => [
                 {
-                    title => 'Z1 - Items',
+                    title => 'Z1 - Notices',
                     queries => [
                         {
                             title => 'Z101',
+                            label => "Notices de dépouillement avec un mauvais label (463)",
+                            based_query => q{
+                                SELECT COUNT(*) AS total FROM biblioitems_view
+                                WHERE ExtractValue(marcxml, '//datafield[@tag="463"]/subfield') != ''
+                                  AND leader67 != 'aa'
+                            },
+                        },
+                        {
+                            title => 'Z102',
+                            label => "Notices de dépouillement avec un mauvais label",
+                            based_query => q{
+                                SELECT COUNT(DISTINCT(biblioitems.biblionumber)) AS total FROM biblioitems_view biblioitems
+                                JOIN items_view items ON (items.biblionumber = biblioitems.biblionumber)
+                                WHERE 1
+                            },
+                            additional_conditions => [
+                                'leader67!=aa',
+                                @depouillement,
+                            ],
+                        },
+                    ],
+                },
+                {
+                    title => 'Z2 - Exemplaires',
+                    queries => [
+                        {
+                            title => 'Z201',
                             label => "Exemplaires ayant un public différent de Adulte ou Enfant",
                             based_query => $total_item_join_biblioitems_query,
                             groupby => 'homebranch',
@@ -2334,7 +2367,7 @@ sub get_blocks {
                             ]]),
                         },
                         {
-                            title => 'Z102',
+                            title => 'Z202',
                             label => "Exemplaires ayant un type de document non-identifié",
                             based_query => $total_item_join_biblioitems_query,
                             groupby => 'homebranch',
@@ -2356,12 +2389,12 @@ sub get_blocks {
                     ],
                 },
                 {
-                    title => 'Z2 - Adhérents',
+                    title => 'Z3 - Adhérents',
                     based_query => $total_borrowers_by_categorycode_query,
                     groupby => 'categorycode',
                     queries => [
                         {
-                            title => 'Z201',
+                            title => 'Z301',
                             label => "Adhérents sans date de naissance (non-collectivités)",
                             additional_conditions => [
                                 [q|dateofbirth=NULL|, q|dateofbirth!=_%|],
@@ -2369,7 +2402,7 @@ sub get_blocks {
                             ],
                         },
                         {
-                            title => 'Z202',
+                            title => 'Z302',
                             label => "Adhérents sans sexe (non-collectivités)",
                             additional_conditions => [
                                 q|sex!=F|,
@@ -2378,7 +2411,7 @@ sub get_blocks {
                             ],
                         },
                         {
-                            title => 'Z203',
+                            title => 'Z303',
                             label => "Adhérents sans sexe et sans date de naissance (non-collectivités)",
                             additional_conditions => [
                                 [q|dateofbirth=NULL|, q|dateofbirth!=_%|],
