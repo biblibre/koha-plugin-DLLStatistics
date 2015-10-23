@@ -535,6 +535,7 @@ sub get_blocks {
     my @documents_video = @{ $conf->{documents_video} };
     my @documents_multimedia = @{ $conf->{documents_multimedia} };
     my @livres_numeriques = @{ $conf->{livres_numeriques} };
+    my @dons = @{ $conf->{dons} };
 
     my @date_before_1811 = (q|publicationyear<1811|);
     my @date_between_1811_1914 =
@@ -907,10 +908,12 @@ sub get_blocks {
                                             based_query => $total_deleteditems_join_biblioitems_query,
                                         },
                                         {
-                                            # TODO missing spec
                                             title => 'D131',
                                             label => "Total Exemplaires 'Livres imprimés' Dons",
-                                            additional_conditions => [qq|dateaccessioned=$date_of_this_year%|],
+                                            additional_conditions => [
+                                                qq|dateaccessioned=$date_of_this_year%|,
+                                                @dons,
+                                            ],
                                         },
                                         {
                                             title => 'D132',
